@@ -5,8 +5,78 @@
     <title>Alpine.js demo</title>
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/main.css">
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Pikaday date picker -->
+    <script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">
+
+    <style>
+        .red { color: red; }
+    </style>
 </head>
 <body>
+<main>
     <h1>Alpine.js demo examples</h1>
+    <p>See also <a href="https://alpinejs.dev/components">ready-made components</a> (most are paid)</p>
+
+    <h2>Simple counter</h2>
+    <!-- x-data : Declare an object that you will track; with dynamic properties (can be empty) -->
+    <!-- @click shorthand for x-on:click (like Vue) : listen for a click event -->
+    <!-- x-text : bind a property (or any js expression) to the element -->
+    <div x-data="{ count: 0 }">
+        <button @click="count++">+</button>
+        <button @click="count--">-</button>
+        <span x-text="count"></span>
+    </div>
+
+    <h2>Update letter count</h2>
+    <!-- x-model : bind a property in two directions -->
+    <!-- :class shorthand for x-bind:class : bind any html attribute (class, disabled,...) -->
+    <div x-data="{ tweet: 'Say something'}">
+        <textarea x-model="tweet"></textarea>
+        <div x-text="tweet.toUpperCase()"></div>
+        <div x-text="tweet.length" :class=" tweet.length > 20 ? 'red' : '' "></div>
+    </div>
+
+    <h2>Init, and control third party library</h2>
+    <p>Version 1</p>
+    <!-- use x-init to call exteral library -->
+    <div x-data="{}" x-init="new Pikaday({ field: $refs.input })">
+        <input type="text" x-ref="input">
+    </div>
+
+    <p>Version 2, all code on same element</p>
+    <!-- all on same element; x-data is empty; $el is magic method (this element) -->
+    <input type="text" x-data x-init="new Pikaday({ field: $el })">
+
+    <h2>Dropdown, show/hide (useful for mobile devices, click away to hide, including on button)</h2>
+    <p>Show / hide with little animation (transition)<br>
+        Click away from content to hide, including clicking again on the button. Or hit Escape.<br>
+        See also <a href="https://alpinejs.dev/plugins/collapse">Collapse plugin</a>, <a href="https://alpinejs.dev/plugins/anchor">Anchor plugin</a>.</p>
+    <p>Version 1</p>
+    <!-- Using @click.away and @keydown.escape.window modifiers-->
+    <div x-data="{ open: false }">
+        <button @click="open = true">Show dropdown</button>
+        <div x-show="open" x-transition @click.away=" open = false " @keydown.escape.window=" open = false ">Dropdown content</div>
+    </div>
+
+    <p>Version 2, extracted function and method</p>
+    <div x-data="dropdown()">
+        <button @click="show()">Show dropdown</button>
+        <div x-show="open" x-transition @click.away=" open = false " @keydown.escape.window=" open = false ">Dropdown content</div>
+    </div>
+    <script>
+        function dropdown(){
+            return {
+                open: false,
+                show() {
+                    this.open = true;
+                }
+            }
+        }
+    </script>
+</main>
 </body>
 </html>
