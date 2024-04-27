@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alpine AJAX request</title>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/main.css">
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body>
+<main>
+    <p>Value from input is send to API through AJAX (fetch), response is received and printed.</p>
+    <form
+        x-data="{
+            form: {
+                name: ''
+            },
+
+            user: null,
+
+            submit() {
+                <!-- Standard fetch using POST to a fake API -->
+                fetch('https://reqres.in/api/users', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(this.form)
+                })
+                .then(response => response.json())
+                .then(user => this.user = user);
+            }
+        }"
+        @submit.prevent="submit"
+    >
+        <div>
+            <label for="name">Name</label>
+            <input type="text"
+                name="name"
+                id="name"
+                x-model="form.name"
+                required
+            >
+        </div>
+        <template x-if="user">
+            <div x-text="'The user ' + user.name + ' was created.'"></div>
+        </template>
+    </form>
+</main>
+</body>
+</html>
