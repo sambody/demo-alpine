@@ -13,7 +13,9 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">
 
     <style>
-        .red { color: red; }
+        .red {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -22,23 +24,37 @@
     <p>See also <a href="https://alpinejs.dev/components">ready-made components</a> (most are paid)</p>
 
     <h2>Simple counter</h2>
-    <!-- x-data : Declare an object that you will track; with dynamic properties (can be empty) -->
-    <!-- @click shorthand for x-on:click (like Vue) : listen for a click event -->
-    <!-- x-text : bind a property (or any js expression) to the element -->
+    <p>x-data : Declare an object that you will track; with dynamic properties (can be empty)<br/>
+        @click shorthand for x-on:click (like Vue) : listen for a click event<br/>
+        x-text : bind a <strong>property</strong> (or any js expression) to the element</p>
     <div x-data="{ count: 0 }">
         <button @click="count++">+</button>
         <button @click="count--">-</button>
         <span x-text="count"></span>
     </div>
 
-    <h2>Update letter count</h2>
-    <!-- x-model : bind a property in two directions -->
-    <!-- :class shorthand for x-bind:class : bind any html attribute (class, disabled,...) -->
+    <h2>Update letter count (x-model)</h2>
+    <p>x-model : bind a property in two directions (instead of one way using :value)<br/>
+        :class shorthand for x-bind:class : bind any html attribute (class, disabled,...)</p>
     <div x-data="{ tweet: 'Say something'}">
         <textarea x-model="tweet"></textarea>
         <div x-text="tweet.toUpperCase()"></div>
         <div x-text="tweet.length" :class=" tweet.length > 20 ? 'red' : '' "></div>
     </div>
+
+    <h2>Update input field, in two directions (x-model)</h2>
+    <p>Equivalent for x-model</p>
+    <form x-data="{ name: 'John Doe' }">
+        <input type="text"
+               x-model="name"
+        >
+        <!-- is equivalent to: -->
+        <input type="text"
+               :value="name"
+               @input="name = $event.target.value"
+        >
+        <p x-text="name"></p>
+    </form>
 
     <h2>Init, and control third party library</h2>
     <p>Version 1</p>
@@ -54,21 +70,26 @@
     <h2>Dropdown, show/hide (useful for mobile devices, click away to hide, including on button)</h2>
     <p>Show / hide with little animation (transition)<br>
         Click away from content to hide, including clicking again on the button. Or hit Escape.<br>
-        See also <a href="https://alpinejs.dev/plugins/collapse">Collapse plugin</a>, <a href="https://alpinejs.dev/plugins/anchor">Anchor plugin</a>.</p>
+        See also <a href="https://alpinejs.dev/plugins/collapse">Collapse plugin</a>, <a
+                href="https://alpinejs.dev/plugins/anchor">Anchor plugin</a>.</p>
     <p>Version 1</p>
     <!-- Using @click.away and @keydown.escape.window modifiers-->
     <div x-data="{ open: false }">
         <button @click="open = true">Show dropdown</button>
-        <div x-show="open" x-transition @click.away=" open = false " @keydown.escape.window=" open = false ">Dropdown content</div>
+        <div x-show="open" x-transition @click.away=" open = false " @keydown.escape.window=" open = false ">Dropdown
+            content
+        </div>
     </div>
 
     <p>Version 2, extracted function and method</p>
     <div x-data="dropdown()">
         <button @click="show()">Show dropdown</button>
-        <div x-show="open" x-transition @click.away=" open = false " @keydown.escape.window=" open = false ">Dropdown content</div>
+        <div x-show="open" x-transition @click.away=" open = false " @keydown.escape.window=" open = false ">Dropdown
+            content
+        </div>
     </div>
     <script>
-        function dropdown(){
+        function dropdown() {
             return {
                 open: false,
                 show() {
@@ -77,6 +98,42 @@
             }
         }
     </script>
+
+    <p>Version 3, a simple toggle with change of button text</p>
+    <div x-data="{ show: false }">
+        <button @click="show = ! show" x-text="show ? 'Hide' : 'Show'"></button>
+
+        <div x-show="show">
+            <a href="/" style="display: block;">Home</a>
+            <a href="/" style="display: block;">About</a>
+            <a href="/" style="display: block;">Contact</a>
+        </div>
+    </div>
+
+    <h2>Simple calculator</h2>
+    <!-- Add numbers -->
+    <!-- x-.model.number otherwise concatenation of strings-->
+    <input type="text" x-model.number="first"> <input type="text" x-model.number="second"> =
+    <output x-text="first + second"></output>
+
+    <h2>Simple tabs</h2>
+    <div x-data="{ currentTab: 'first'}">
+        <button @click="currentTab = 'first'" :class="{ 'active' : currentTab === 'first'}">First</button>
+        <button @click="currentTab = 'second'" :class="{ 'active' : currentTab === 'second'}">First</button>
+        <button @click="currentTab = 'third'" :class="{ 'active' : currentTab === 'third'}">First</button>
+
+        <div style="border: 1px dotted grey; padding: 1rem">
+            <div x-show="currentTab === 'first'">
+                <p>First tab</p>
+            </div>
+            <div x-show="currentTab === 'second'">
+                <p>Second tab</p>
+            </div>
+            <div x-show="currentTab === 'third'">
+                <p>Third tab</p>
+            </div>
+        </div>
+    </div>
 </main>
 </body>
 </html>
